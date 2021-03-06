@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/DELL/CLionProjects/Algorithm/main.cpp
+tree/tree.h
+C:/Users/DELL/CLionProjects/Algorithm/tree/tree.h
+
+C:/Users/DELL/CLionProjects/Algorithm/tree/tree.cpp
+tree.h
+C:/Users/DELL/CLionProjects/Algorithm/tree/tree.h
+
+C:/Users/DELL/CLionProjects/Algorithm/tree/tree.h
+cstdint
+-
+list
+-
+
