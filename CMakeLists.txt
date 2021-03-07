@@ -7,4 +7,5 @@ add_executable(Algorithm
         main.cpp
         tree/tree.h
         tree/tree.cpp
-        )
+        tree/binary_tree.h
+        tree/binary_tree.cpp)
