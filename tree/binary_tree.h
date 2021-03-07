@@ -53,7 +53,7 @@ public:
 public:
     explicit BinaryTree();
 
-    Node* root();
+    Node* root() const { return root_; }
 
 private:
     Node* root_;
