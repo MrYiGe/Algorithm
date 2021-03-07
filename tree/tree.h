@@ -8,20 +8,19 @@
 #include <cstdint>
 #include <list>
 
-
 template<typename Tp>
 class Tree {
 public:
-    typedef Tp 	    			    value_type;
+    typedef Tp 	    			        value_type;
     typedef value_type*			        pointer;
     typedef const value_type*           const_pointer;
-    typedef value_type&         reference;
-    typedef const value_type& const_reference;
-    typedef value_type*          		      iterator;
-    typedef const value_type*			      const_iterator;
-    typedef std::size_t                    	      size_type;
-    typedef std::ptrdiff_t                   	      difference_type;
-    typedef std::reverse_iterator<iterator>	      reverse_iterator;
+    typedef value_type&                 reference;
+    typedef const value_type&           const_reference;
+    typedef value_type*          		iterator;
+    typedef const value_type*			const_iterator;
+    typedef std::size_t                 size_type;
+    typedef std::ptrdiff_t                   	    difference_type;
+    typedef std::reverse_iterator<iterator>	        reverse_iterator;
     typedef std::reverse_iterator<const_iterator>   const_reverse_iterator;
 
     struct Node {
@@ -47,17 +46,19 @@ public:
         /** 当前结点的孩子结点的最大度 */
         uint32_t MaxDegree() const;
 
+        uint32_t Level() const;
+
     private:
-        pointer value_;
-        Node*    parent_;
-        std::list<Node*> children_;
+        pointer             value_;
+        Node*               parent_;
+        std::list<Node*>    children_;
     };
 
 public:
     explicit Tree();
     ~Tree();
 
-    Tree& Append(const_pointer value);
+   //Tree& Append(const_pointer value);
 
 public:
     bool empty();

@@ -43,6 +43,19 @@ Tree<Tp>::Node::Node()
 
 }
 
+template<typename Tp>
+uint32_t Tree<Tp>::Node::Level() const {
+   uint32_t level = 0;
+
+    Node* root = parent_;
+    while (root != nullptr) {
+        level++;
+        root = root->parent();
+    }
+
+    return level;
+}
+
 
 template<typename Tp>
 bool Tree<Tp>::empty() {
