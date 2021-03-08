@@ -24,61 +24,164 @@ public:
     typedef std::reverse_iterator<const_iterator>   const_reverse_iterator;
 
     struct Node {
-        explicit Node();
-        explicit Node(const_pointer value);
-        Node(const Node* parent, const_pointer value);
+        Node(const_reference value,  Node* child = nullptr, Node* brother = nullptr)
+            : value_(new value_type(value))
+            , child_(child)
+            , brother_(brother) {
+        }
 
-        const Node* parent() const { return parent_; }
+        Node(const_pointer value, Node* child = nullptr, Node* brother = nullptr)
+            : value_(value)
+            , child_(child)
+            , brother_(brother) {
+        }
 
         const_pointer value() const { return value_; }
-        Node& set_value(const_pointer value) { value_ = value; }
+        void set_value(const_pointer value) { value_ = value; }
 
-        const std::list<Node*> children() const { return children_; }
+        const Node* child() const { return child_; }
+        void set_child(Node* child) { child_ = child; }
 
-        size_type size() const { return children_.size(); }
-
-        Node& AddChild(const_pointer value) { children_.template emplace_back(Node(this, value)); }
-        Node& AddChild(const Node& node) { node.parent_ = this; children_.template emplace_back(node); }
+        const Node* brother() const { return brother_; }
+        void set_brother(Node* brother) { brother_ = brother; }
 
         /** 结点的度，即子结点树 */
-        size_type Degree() const { return size(); }
+        size_type Degree() const;
 
         /** 当前结点的孩子结点的最大度 */
-        uint32_t MaxDegree() const;
+       // uint32_t MaxDegree() const;
 
-        uint32_t Level() const;
+        size_type Level() const;
 
     private:
         pointer             value_;
-        Node*               parent_;
-        std::list<Node*>    children_;
+
+        /** first child */
+        Node*               child_;
+
+        /** first brother of from left to right */
+        Node*               brother_;
+
+        friend class Tree<Tp>;
     };
 
 public:
-    explicit Tree();
+    static Node* CreateNode(const_reference value = nullptr, Node* child = nullptr, Node* brother = nullptr);
+    static Node* CreateNode(const_pointer value = nullptr, Node* child = nullptr, Node* brother = nullptr);
+
+    explicit Tree(const Node* root = nullptr);
     ~Tree();
 
-   //Tree& Append(const_pointer value);
+    Tree& RootAppendChild(Node* child);
+    Node* RootFirstChild() const;
+    Node* RootFirstBrother() const;
 
 public:
     bool empty();
     const Node* root() const { return root_;}
 
+    Tree& InsertChild(const Node* target, size_type pos, Node* node);
+
 private:
     Node* root_;
 };
 
-
 template<typename Tp>
-Tree<Tp>::Tree()
-        : root_(nullptr) {
+Tree<Tp>::Tree(const Tree::Node *root)
+    : root_(const_cast<Tree::Node*>(root)){
+
 }
+
 
 template<typename Tp>
 Tree<Tp>::~Tree() {
     delete root_;
 }
 
+template<typename Tp>
+Tree<Tp>& Tree<Tp>::InsertChild(const Tree::Node *target, Tree::size_type pos, Tree::Node *node) {
+    /** 先根遍历和后根遍历*/
+    if (root_ == target) {
+        if (root_->child_ == nullptr) {
+            root_->set_child(node);
+            return *this;
+        }
+
+        Node *last = root_->child_;
+        Node* p = last->brother_;
+
+        if (p == nullptr) {
+            last->set_brother(node);
+            return *this;
+        }
+
+        for (size_type i = 1; p != nullptr; p = p->brother_) {
+            if (i < pos) {
+                i++;
+                last = p;
+                continue;
+            } else {
+                last->set_brother(node);
+                p->set_brother(node);
+                node->set_brother(p->brother_);
+                break;
+            }
+        }
+    }
+
+    return *this;
+}
+
+template<typename Tp>
+typename Tree<Tp>::Node* Tree<Tp>::CreateNode(const_reference value, Tree::Node *child, Tree::Node *brother) {
+    return new Node(value, child, brother);
+}
+
+template<typename Tp>
+typename Tree<Tp>::Node* Tree<Tp>::CreateNode(Tree::const_pointer value,  Tree::Node *child, Tree::Node *brother) {
+    return new Node(value, child, brother);
+}
+
+template<typename Tp>
+Tree<Tp>& Tree<Tp>::RootAppendChild(Tree::Node *child) {
+    if (root_ == nullptr) {
+        return *this;
+    }
+
+    if (root_->child_ == nullptr) {
+        root_->set_child(child);
+        return *this;
+    }
+
+    Node* prev = root_->child_;
+    Node* brother = prev;
+
+    while (brother != nullptr) {
+        prev = brother;
+        brother = brother->brother_;
+    }
+
+    prev->set_brother(child);
+    return *this;
+}
+
+template<typename Tp>
+typename Tree<Tp>::Node *Tree<Tp>::RootFirstChild() const {
+    if (root_ == nullptr) {
+        return nullptr;
+    }
+
+    return root_->child();
+}
+
+template<typename Tp>
+typename Tree<Tp>::Node *Tree<Tp>::RootFirstBrother() const {
+    if (root_ == nullptr) {
+        return nullptr;
+    }
+
+    return root_->child()->brother();
+}
 
 
 #endif //ALGORITHM_TREE_H

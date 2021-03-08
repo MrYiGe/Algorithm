@@ -5,56 +5,31 @@
 #include "tree.h"
 
 template<typename Tp>
-Tree<Tp>::Node::Node(Tree::const_pointer value)
-    : value_(value)
-    , parent_(nullptr) {
-
-}
-
-template<typename Tp>
-Tree<Tp>::Node::Node(const Tree::Node* parent, Tree::const_pointer value)
-    : parent_(parent)
-    , value_(value) {
-
-}
-
-template<typename Tp>
-uint32_t Tree<Tp>::Node::MaxDegree() const {
-    uint32_t maxDegree = Degree();
-
-    for (auto it = children_.cbegin(); it != children_.cend(); it++) {
-        if ((*it).children_.empty()) {
-            continue;
-        }
-
-        uint32_t childMaxDegree = MaxDegree();
-        if (childMaxDegree > maxDegree) {
-            maxDegree = childMaxDegree;
-        }
+typename Tree<Tp>::size_type Tree<Tp>::Node::Degree() const {
+    if (child_ == nullptr) {
+        return 0;
     }
 
-    return maxDegree;
+    if (child_->brother() == nullptr) {
+        return 1;
+    }
+
+    return 1 + child_->brother()->Degree();
 }
 
 template<typename Tp>
-Tree<Tp>::Node::Node()
-    : value_(nullptr)
-    , parent_(nullptr) {
+typename Tree<Tp>::size_type Tree<Tp>::Node::Level() const {
+    size_type level = 1;
+    const Node* child = child_;
 
-}
-
-template<typename Tp>
-uint32_t Tree<Tp>::Node::Level() const {
-   uint32_t level = 0;
-
-    Node* root = parent_;
-    while (root != nullptr) {
-        level++;
-        root = root->parent();
+    while (child != nullptr) {
+        level += 1;
+        child = child->child();
     }
 
     return level;
 }
+
 
 
 template<typename Tp>

@@ -5,8 +5,8 @@
 #include "binary_tree.h"
 
 template<typename Tp>
-BinaryTree<Tp>::Node::Node(BinaryTree::const_pointer value)
-    : value_(value)
+BinaryTree<Tp>::Node::Node(BinaryTree::const_reference value)
+    : value_(new value_type(value))
     , parent_(nullptr)
     , left_(nullptr)
     , right_(nullptr) {

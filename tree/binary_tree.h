@@ -25,7 +25,7 @@ public:
 
     struct Node {
     public:
-        explicit Node(const_pointer value = nullptr);
+        explicit Node(const_reference value);
         Node(const_pointer value, Node* parent = nullptr);
         Node(const_pointer value, Node* parent, Node* left = nullptr);
         Node(const_pointer value, Node* parent, Node* left, Node* right = nullptr);
@@ -56,6 +56,7 @@ public:
     Node* root() const { return root_; }
 
 private:
+
     Node* root_;
 };
 
